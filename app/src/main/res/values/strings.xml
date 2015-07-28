@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="parallel_thread_text">This Screen is used to show,how parallel threads run and completed</string>
+    <string name="download_image_text">This Screen is used to show,how parallel threads run and download image from server</string>
+    <string name="parallel_thread">Parallel Thread</string>
+    <string name="download_images">Download Images</string>
 </resources>
