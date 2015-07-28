@@ -4,16 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class ActDownLoadImage extends ActionBarActivity {
     ImageView imageview;
     int index = 0, MY_THREAD_SIZE = 10,THREAD_TIME_OUT=1500 ;
 
-
+    private static final Object object=new Object();
     /* String array for urls*/
     String[] imageUrls = new String[]
             {"http://shreyanarayan.com/images/gallery/big20.jpg",
@@ -68,12 +65,12 @@ public class ActDownLoadImage extends ActionBarActivity {
         butShowNextImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDownloadedImage();
+                showNextImage();
             }
         });
     }
 
-    private void showDownloadedImage() {
+    private void showNextImage() {
 
         try {
             imageview.setImageBitmap(imagesStack.get(index));
@@ -86,8 +83,22 @@ public class ActDownLoadImage extends ActionBarActivity {
             index = 0;
 
     }
+    private void showDownloadedImage(Bitmap bitmap) {
 
- /*
+         //for thread safe
+        synchronized (object) {
+            try {
+                imageview.setImageBitmap(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+
+    /*
   This function is used to run parallel Asyn task,
   to download images from server
   */
@@ -167,12 +178,15 @@ public class ActDownLoadImage extends ActionBarActivity {
         @Override
         protected void onPostExecute(Bitmap result) {
             imagesStack.add(result);
+
             progressBar1.setProgress(imagesStack.size());
+            if(result!=null)
+                showDownloadedImage(result);
 
             if (imagesStack.size() == MY_THREAD_SIZE) {
                 progressBar1.setVisibility(View.GONE);//Disable progressbar
                 butShowNextImage.setEnabled(true);//Enable image button
-                showDownloadedImage();
+               // showNextImage();
 
             }
 
