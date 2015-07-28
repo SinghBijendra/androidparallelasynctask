@@ -18,6 +18,7 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class ActDownLoadImage extends ActionBarActivity {
@@ -28,7 +29,8 @@ public class ActDownLoadImage extends ActionBarActivity {
     List<Bitmap> imagesStack = new ArrayList<Bitmap>();
 
     ImageView imageview;
-    int index = 0, MY_THREAD_SIZE = 10;
+    int index = 0, MY_THREAD_SIZE = 10,THREAD_TIME_OUT=1500 ;
+
 
     /* String array for urls*/
     String[] imageUrls = new String[]
@@ -94,8 +96,7 @@ public class ActDownLoadImage extends ActionBarActivity {
         int i = 0;
         progressBar1.setVisibility(View.VISIBLE);
         for (i = 0; i < MY_THREAD_SIZE; i++)
-            new DownloadImageAsyn( imageUrls[i]).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+                new DownloadImageAsyn(imageUrls[i]).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
@@ -134,10 +135,21 @@ public class ActDownLoadImage extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
         }
 
         @Override
         protected Bitmap doInBackground(Void... params) {
+
+
+            //Here i am setting time out for this thread
+            try {
+                get(THREAD_TIME_OUT, TimeUnit.MILLISECONDS);
+            }
+            catch(Exception e)
+            {
+
+            }
 
             Bitmap bitmap = null;
             try {
